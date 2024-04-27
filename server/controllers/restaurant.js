@@ -3,7 +3,13 @@ import { uid } from "uid";
 
 export const getRestaurants = async (req, res) => {
   try {
-    const response = await pool.query("SELECT * FROM restaurants");
+    const response = await pool.query(`
+      SELECT r.*, ROUND(AVG(rv.rating), 1) AS average_rating
+      FROM restaurants r
+      LEFT JOIN reviews rv ON r.id = rv.restaurant_id
+      GROUP BY r.id
+    `);
+
     const restaurants = response.rows;
     res.status(200).json(restaurants);
   } catch (error) {
@@ -14,12 +20,34 @@ export const getRestaurants = async (req, res) => {
 export const getRestaurant = async (req, res) => {
   try {
     const { id } = req.params;
-    const response = await pool.query("SELECT * FROM restaurants WHERE id=$1", [
-      id,
-    ]);
-    if (response.rowCount === 1) {
-      const restaurants = response.rows[0];
-      res.status(200).json(restaurants);
+
+    // Fetch restaurant details and reviews
+    const restaurantQuery = await pool.query(
+      "SELECT r.id AS restaurant_id, r.name AS restaurant_name, r.location AS restaurant_location, rv.id AS review_id, rv.name AS reviewer_name, rv.review, rv.rating FROM restaurants r LEFT JOIN reviews rv ON r.id = rv.restaurant_id WHERE r.id = $1",
+      [id]
+    );
+
+    if (restaurantQuery.rowCount > 1) {
+      // Group reviews by restaurant details
+      const restaurantDetails = {
+        id: restaurantQuery.rows[0].restaurant_id,
+        name: restaurantQuery.rows[0].restaurant_name,
+        location: restaurantQuery.rows[0].restaurant_location,
+        reviews: [],
+      };
+
+      restaurantQuery.rows.forEach((row) => {
+        if (row.review_id) {
+          restaurantDetails.reviews.push({
+            id: row.review_id,
+            reviewer_name: row.reviewer_name,
+            review: row.review,
+            rating: row.rating,
+          });
+        }
+      });
+
+      res.status(200).json(restaurantDetails);
     } else {
       res.status(404).json({ message: "Restaurant not found" });
     }
