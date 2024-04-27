@@ -113,3 +113,26 @@ export const updateRestaurant = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const addReview = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, review, rating } = req.body;
+
+    const restaurantQuery = await pool.query(
+      "SELECT * FROM restaurants WHERE id = $1",
+      [id]
+    );
+    if (restaurantQuery.rowCount !== 1) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+    await pool.query(
+      "INSERT INTO reviews (id, name, restaurant_id, review, rating) VALUES ($1, $2, $3, $4, $5)",
+      [uid(), name, id, review, rating]
+    );
+
+    res.status(201).json({ message: "Review added successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

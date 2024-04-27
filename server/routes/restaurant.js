@@ -5,6 +5,7 @@ import {
   addRestaurant,
   updateRestaurant,
   deleteRestaurant,
+  addReview,
 } from "../controllers/restaurant.js";
 
 const router = Router();
@@ -17,5 +18,6 @@ router.get("/:id", getRestaurant);
 router.post("/", addRestaurant);
 router.delete("/:id", deleteRestaurant);
 router.patch("/:id", updateRestaurant);
+router.post("/:id/reviews", addReview);
 
 export default router;
