@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import ReviewCard from "../../components/ReviewCard";
 import Rating from "@mui/material/Rating";
+import AddReviewForm from "../../components/AddReviewForm";
 
 const RestaurantPage = () => {
   const [restaurant, setRestaurant] = useState({
@@ -53,6 +54,8 @@ const RestaurantPage = () => {
           <ReviewCard key={review.id} review={review} />
         ))}
       </div>
+
+      <AddReviewForm />
     </>
   );
 };

@@ -127,6 +127,8 @@ export const updateRestaurant = async (req, res) => {
 
 export const addReview = async (req, res) => {
   try {
+    console.log(req.body);
+    console.log(req.params);
     const { id } = req.params;
     const { name, review, rating } = req.body;
 
