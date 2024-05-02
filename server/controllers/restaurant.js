@@ -37,7 +37,7 @@ export const getRestaurant = async (req, res) => {
     // Fetch restaurant details and reviews
     const restaurantQuery = await pool.query(query, [id]);
 
-    if (restaurantQuery.rowCount > 1) {
+    if (restaurantQuery.rowCount >= 1) {
       // Group reviews by restaurant details
       const restaurantDetails = {
         id: restaurantQuery.rows[0].restaurant_id,
@@ -57,7 +57,6 @@ export const getRestaurant = async (req, res) => {
           });
         }
       });
-
       res.status(200).json(restaurantDetails);
     } else {
       res.status(404).json({ message: "Restaurant not found" });

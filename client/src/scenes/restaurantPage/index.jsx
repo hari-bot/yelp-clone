@@ -3,9 +3,13 @@ import Heading from "../../components/Heading";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import ReviewCard from "../../components/ReviewCard";
+import Rating from "@mui/material/Rating";
 
 const RestaurantPage = () => {
-  const [restaurant, setRestaurant] = useState({ reviews: [] });
+  const [restaurant, setRestaurant] = useState({
+    reviews: [],
+    average_rating: "",
+  });
   const { id } = useParams();
 
   useEffect(() => {
@@ -25,8 +29,26 @@ const RestaurantPage = () => {
   return (
     <>
       <Heading>{restaurant.name}</Heading>
-      <p className="text-center">average_rating: {restaurant.average_rating}</p>
-      <div className="row">
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "30px",
+        }}
+      >
+        <Rating
+          name="read-only"
+          value={restaurant.average_rating}
+          precision={0.5}
+          readOnly
+        />
+        <div className="font-weight-bold text-warning">
+          ({restaurant.average_rating})
+        </div>
+      </div>
+
+      <div className="row mt-5">
         {restaurant.reviews.map((review) => (
           <ReviewCard key={review.id} review={review} />
         ))}

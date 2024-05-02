@@ -1,4 +1,5 @@
 import React from "react";
+import { Rating } from "@mui/material";
 
 const ReviewCard = ({ review }) => {
   return (
@@ -9,7 +10,12 @@ const ReviewCard = ({ review }) => {
       >
         <div class="card-header d-flex justify-content-between">
           <div>{review.reviewer_name}</div>
-          <div>({review.rating})</div>
+          <Rating
+            name="read-only"
+            value={review.rating}
+            precision={0.5}
+            readOnly
+          />
         </div>
         <div class="card-body">
           <p class="card-text">{review.review}</p>

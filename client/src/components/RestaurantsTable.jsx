@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Rating from "@mui/material/Rating";
 
 const RestaurantsTable = ({ restaurantsData, setRestaurantsData }) => {
   const navigate = useNavigate();
@@ -41,7 +42,15 @@ const RestaurantsTable = ({ restaurantsData, setRestaurantsData }) => {
             </th>
             <td>{restaurant.location}</td>
             <td>{restaurant.pricerange}</td>
-            <td>{restaurant.average_rating}</td>
+            <td>
+              {" "}
+              <Rating
+                name="read-only"
+                value={restaurant.average_rating}
+                precision={0.5}
+                readOnly
+              />
+            </td>
             <td>
               <button className="btn btn-warning">Update</button>
             </td>

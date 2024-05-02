@@ -15,3 +15,12 @@ rating INT NOT NULL check(
         and rating <= 5
 	)
 );
+
+CREATE TABLE reviews (
+    id VARCHAR(12) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    restaurant_id VARCHAR(12) NOT NULL,
+    review TEXT NOT NULL,
+    rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE
+);
