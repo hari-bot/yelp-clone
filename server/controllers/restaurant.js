@@ -24,11 +24,12 @@ export const getRestaurant = async (req, res) => {
     SELECT r.id AS restaurant_id,
            r.name AS restaurant_name,
            r.location AS restaurant_location,
+           r.pricerange AS price_range,
            rv.id AS review_id,
            rv.name AS reviewer_name,
            rv.review,
            rv.rating,
-           ROUND(AVG(rv.rating) OVER (PARTITION BY r.id)) AS average_rating
+           ROUND(AVG(rv.rating) OVER (PARTITION BY r.id),1) AS average_rating
     FROM restaurants r
     LEFT JOIN reviews rv ON r.id = rv.restaurant_id
     WHERE r.id = $1;
@@ -44,6 +45,7 @@ export const getRestaurant = async (req, res) => {
         name: restaurantQuery.rows[0].restaurant_name,
         location: restaurantQuery.rows[0].restaurant_location,
         average_rating: restaurantQuery.rows[0].average_rating,
+        pricerange: restaurantQuery.rows[0].price_range,
         reviews: [],
       };
 
@@ -104,10 +106,10 @@ export const deleteRestaurant = async (req, res) => {
 export const updateRestaurant = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, location, pricerange } = req.body;
+    const { name, location, priceRange } = req.body;
     const updatedRestaurant = await pool.query(
       "UPDATE restaurants SET name=$1, location=$2, pricerange=$3 WHERE id=$4 RETURNING *",
-      [name, location, pricerange, id]
+      [name, location, priceRange, id]
     );
 
     if (updatedRestaurant.rowCount === 1) {

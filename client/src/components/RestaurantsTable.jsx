@@ -46,13 +46,20 @@ const RestaurantsTable = ({ restaurantsData, setRestaurantsData }) => {
               {" "}
               <Rating
                 name="read-only"
-                value={restaurant.average_rating}
+                value={parseFloat(restaurant.average_rating)}
                 precision={0.5}
                 readOnly
               />
             </td>
             <td>
-              <button className="btn btn-warning">Update</button>
+              <button
+                className="btn btn-warning"
+                onClick={() => {
+                  navigate(`/restaurant/${restaurant.id}/update`);
+                }}
+              >
+                Update
+              </button>
             </td>
             <td>
               <button

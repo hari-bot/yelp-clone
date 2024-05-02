@@ -39,12 +39,12 @@ const RestaurantPage = () => {
       >
         <Rating
           name="read-only"
-          value={restaurant.average_rating}
+          value={parseFloat(restaurant.average_rating)}
           precision={0.5}
           readOnly
         />
         <div className="font-weight-bold text-warning">
-          ({restaurant.average_rating})
+          ({parseFloat(restaurant.average_rating)})
         </div>
       </div>
 
