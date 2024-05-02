@@ -17,12 +17,16 @@ export const HomePage = () => {
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>
       <Heading>Restaurant Finder</Heading>
       <AddRestaurantForm />
-      <RestaurantsTable restaurantsData={restaurantsData} />
+      <RestaurantsTable
+        restaurantsData={restaurantsData}
+        setRestaurantsData={setRestaurantsData}
+      />
     </>
   );
 };

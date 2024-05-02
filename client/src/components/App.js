@@ -1,5 +1,6 @@
-import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HomePage } from "../scenes/homePage";
+import RestaurantPage from "../scenes/restaurantPage";
 
 const App = () => {
   return (
@@ -7,6 +8,7 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/restaurant/:id" element={<RestaurantPage />} />
         </Routes>
       </BrowserRouter>
     </div>

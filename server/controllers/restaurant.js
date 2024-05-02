@@ -20,12 +20,22 @@ export const getRestaurants = async (req, res) => {
 export const getRestaurant = async (req, res) => {
   try {
     const { id } = req.params;
+    const query = `
+    SELECT r.id AS restaurant_id,
+           r.name AS restaurant_name,
+           r.location AS restaurant_location,
+           rv.id AS review_id,
+           rv.name AS reviewer_name,
+           rv.review,
+           rv.rating,
+           ROUND(AVG(rv.rating) OVER (PARTITION BY r.id)) AS average_rating
+    FROM restaurants r
+    LEFT JOIN reviews rv ON r.id = rv.restaurant_id
+    WHERE r.id = $1;
+  `;
 
     // Fetch restaurant details and reviews
-    const restaurantQuery = await pool.query(
-      "SELECT r.id AS restaurant_id, r.name AS restaurant_name, r.location AS restaurant_location, rv.id AS review_id, rv.name AS reviewer_name, rv.review, rv.rating FROM restaurants r LEFT JOIN reviews rv ON r.id = rv.restaurant_id WHERE r.id = $1",
-      [id]
-    );
+    const restaurantQuery = await pool.query(query, [id]);
 
     if (restaurantQuery.rowCount > 1) {
       // Group reviews by restaurant details
@@ -33,6 +43,7 @@ export const getRestaurant = async (req, res) => {
         id: restaurantQuery.rows[0].restaurant_id,
         name: restaurantQuery.rows[0].restaurant_name,
         location: restaurantQuery.rows[0].restaurant_location,
+        average_rating: restaurantQuery.rows[0].average_rating,
         reviews: [],
       };
 
@@ -58,13 +69,12 @@ export const getRestaurant = async (req, res) => {
 
 export const addRestaurant = async (req, res) => {
   try {
-    const { name, location, pricerange } = req.body;
+    const { name, location, priceRange } = req.body;
     const id = uid();
     const newRestaurant = await pool.query(
       "INSERT INTO restaurants (id, name, location, pricerange) VALUES ($1,$2,$3,$4) RETURNING id",
-      [id, name, location, pricerange]
+      [id, name, location, priceRange]
     );
-    console.log(newRestaurant.rows[0]);
     res.json({
       message: "Restaurant added successfully",
       restaurantId: newRestaurant.rows[0],
